@@ -34,6 +34,8 @@ const sendMessage = async (chatId, text) => {
     }
 };
 
+
+
 // Main function to start long polling
 const startPolling = async () => {
     let offset = 0; // Initialize offset for updates
@@ -42,6 +44,7 @@ const startPolling = async () => {
         const updates = await getUpdates(offset);
         if (updates.length > 0) {
             updates.forEach((update) => {
+                if (update.message && update.message.chat) {
                 const chatId = update.message.chat.id;
                 const text = update.message.text;
 
@@ -50,6 +53,9 @@ const startPolling = async () => {
 
                 // Update offset for the next request
                 offset = update.update_id + 1;
+                console.log("offset is : "+ offset)
+                console.log("chat id : "+ chatId)
+                }
             });
         }
 
