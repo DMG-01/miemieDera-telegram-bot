@@ -67,7 +67,7 @@ const downloadFile = async (url, destination, mimeType) => {
     } catch (error) {
         console.error('Error downloading file:', error);
     }
-};
+}
 
 const downloadAndExtractPdfFile =  async(url,destination) =>{
 
@@ -77,7 +77,8 @@ const downloadAndExtractPdfFile =  async(url,destination) =>{
         console.log(`pdf downloaded to ${destination}`)
         const pdfBuffer = fs.readFileSync(destination)
         const pdfData = await PdfParse(pdfBuffer)
-        console.log(`extracted pdf content :${pdfData}`)
+        console.log(`extracted pdf content :${pdfData.text}`)
+        fs.writeFileSync("newpdf",pdfData.text)
 
     }catch(error) {
         console.log(`error downloading file ${error}`)
