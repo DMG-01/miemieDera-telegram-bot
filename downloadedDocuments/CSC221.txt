@@ -1,0 +1,1293 @@
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace ConsoleApp9
+{
+    internal class Program
+    {
+        static void Main(string[] args)
+        {
+            int var1;
+            int var2 = 2;
+
+            var1 = var2;
+            Console.WriteLine("The value is" + var1);
+
+
+            //example1
+            var2 = 2;
+            var1 = var2++;
+            Console.WriteLine("Example1:");
+            Console.WriteLine();
+            Console.WriteLine("var1={0},var2={1}", var1, var2);
+            Console.WriteLine();
+            //example2
+            var2 = 2;
+            var1 = var2--;
+            Console.WriteLine("Example2:");
+            Console.WriteLine();
+            Console.WriteLine("var1={0},var2={1}", var1, var2);
+            Console.WriteLine();
+            //example3
+            var2 = 2;
+            var1 = ++var2;
+            Console.WriteLine("Example2:");
+            Console.WriteLine();
+            Console.WriteLine("var1={0},var2={1}", var1, var2);
+            Console.WriteLine();
+            
+            //example4
+            var2 = 2;
+            var1 = --var2;
+            Console.WriteLine("Example4:");
+            Console.WriteLine("var1={0},var2={1}", var1, var2);
+            Console.WriteLine();
+
+
+
+
+        }
+    }
+
+}
+
+
+
+
+
+
+
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace ConsoleApp9
+{
+    internal class Program
+    {
+        static void Main(string[] args)
+        {
+           double cm;
+            double inches;
+
+            Console.WriteLine("Enter a value in cm");
+            cm = Convert.ToDouble(Console.ReadLine());
+            inches = cm * 0.3937;
+            Console.WriteLine("The value in inches is"+ inches);
+        
+        }
+    }
+
+}
+
+
+
+String name = "John" ;
+            int age = 78;
+            Console.WriteLine("There was a man named" + name);
+            Console.WriteLine("He was"+ age + "years old");
+            Console.WriteLine("He was an old man, how interesting!");
+
+
+A method is a block of code that we can call to perform a spacific task.Methods can either give us information about our strings or modify it
+They include ToUpper(),ToLower(), IndexOf(),Substring(),Contains(),Lenght(), 
+int a, b, c, d;
+            
+       //The average of four numbers
+            Console.WriteLine("Enter four integers,");
+            a = Convert.ToInt32(Console.ReadLine());
+            b = Convert.ToInt32(Console.ReadLine());
+            c = Convert.ToInt32(Console.ReadLine());
+            d = Convert.ToInt32(Console.ReadLine());
+            Console.WriteLine("The average is" + (a + b + c + d) / 4);
+            Console.ReadLine();
+
+//Area of a sphere
+
+ double radius;
+            double Area;
+
+            Console.WriteLine(" The radius of the sphere");
+            radius = Convert.ToDouble(Console.ReadLine());
+            Area = 4*3.142 * radius * radius;
+
+            Console.WriteLine("The area is" + Area);
+            Console.ReadLine();
+
+//Volume of a sphere
+ double radius;
+            double Volume;
+
+            Console.WriteLine(" The radius of the sphere");
+            radius = Convert.ToDouble(Console.ReadLine());
+            Volume = (4/3)*3.142 * radius*radius*radius;
+
+            Console.WriteLine("The Volume is" + Volume);
+            Console.ReadLine();
+
+
+//Exercise 1
+
+
+string firstname, secondname, thirdname;
+            int year, age,present_year;
+
+            Console.WriteLine("Enter your firstname");
+            firstname = Console.ReadLine();
+            Console.WriteLine("Enter your secondname");
+            secondname = Console.ReadLine();
+            Console.WriteLine("Enter your thirdname");
+            thirdname = Console.ReadLine();
+            Console.WriteLine("Your name is " + firstname + secondname + thirdname);
+            Console.WriteLine("Enter your year of birth");
+            year = Convert.ToInt32(Console.ReadLine());
+            Console.WriteLine("Enter the present year");
+            present_year = Convert.ToInt32(Console.ReadLine());
+            age = present_year - year;
+            Console.WriteLine("You are "+age+" years old");
+
+            Console.WriteLine("You are welcome " + firstname+" and you are "+ age+ " years old");
+
+            int x, y;
+            Console.WriteLine("Enter two numbers");
+            x= Convert.ToInt32(Console.ReadLine());
+            y= Convert.ToInt32(Console.ReadLine());
+
+            Console.WriteLine("x + y = " + (x + y));
+            Console.WriteLine("x-y= " + (x - y));
+            Console.WriteLine("x/y= " + (x / y));
+            Console.WriteLine("x%y = " + (x % y));
+
+
+
+// PYTHAGORAS THEORM
+
+
+int x1,x2,y1,y2;
+            int distance1, distance2, distance3;
+            double power1,power2,distance; 
+            Console.WriteLine("Enter four integer values of your choice");
+            x1 = Convert.ToInt32(Console.ReadLine());
+            x2 = Convert.ToInt32(Console.ReadLine());
+            y1 = Convert.ToInt32(Console.ReadLine());
+            y2 = Convert.ToInt32(Console.ReadLine());
+            distance1 = x2 - x1;
+            distance1 = Convert.ToInt32(Console.ReadLine());
+            Console.WriteLine("the d1 is " + distance1);
+            distance2 = y2 - y1;
+            distance2 = Convert.ToInt32(Console.ReadLine());
+            Console.WriteLine("the d2 is " + distance2);
+            power1 = Math.Pow(distance1,2);
+            power1 = Convert.ToDouble(Console.ReadLine());
+            Console.WriteLine("the p1 is " + power1);
+            power2 =Math.Pow(distance2,2);
+            power2 = Convert.ToDouble(Console.ReadLine());
+            Console.WriteLine("the p2 is " + power2);
+            distance3 = power1 + power2;
+            distance = Math.Sqrt(distance3);
+            distance = Convert.ToDouble(Console.ReadLine());
+            Console.WriteLine("The distance of the points is " + distance);
+            
+
+
+//STUDENTS GRADE
+
+
+int score;
+
+            Console.WriteLine("Enter the student score is :");
+            score = Convert.ToInt32(Console.ReadLine());
+            if
+                ((score <= 100) && (score >= 70))
+            {
+                Console.WriteLine("The student's grade is A");
+            }
+            else if
+
+                ((score <= 69) && (score >= 60))
+            {
+                Console.WriteLine("The student's grade is B");
+            }
+            else if
+                     ((score <= 59) && (score >= 50))
+            {
+                Console.WriteLine("The student's grade is C");
+            }
+            else if
+               ((score <= 49) && (score >= 45))
+            {
+                Console.WriteLine("The student's grade is D");
+            }
+            else if
+                ((score < 45) && (score >= 0))
+            {
+                Console.WriteLine("The student's grade is F");
+            }
+            else if (score < 0)
+                    {
+                Console.WriteLine("Not within range");
+            }
+            
+
+//Quadratic Equation
+
+
+ double x1, x2;
+            Double a, b, c, var1, var2;
+            Console.WriteLine("Enter three values : a,b,c");
+            a = Convert.ToDouble(Console.ReadLine());
+            b = Convert.ToDouble(Console.ReadLine());
+            c = Convert.ToDouble(Console.ReadLine());
+
+            var1 = Math.Pow(b, 2) - (4 * a * c);
+            var1 = Convert.ToDouble(Console.ReadLine());
+            if (var1 <= 0)
+            {
+                Console.WriteLine("This is an imaginary root");
+            }
+            else
+            {
+                var2 = Math.Sqrt(var1);
+                var2 = Convert.ToDouble(Console.ReadLine());
+                x1 = (-b + var2) / (2 * a);
+                x2 = (-b + var2) / (2 * a);
+                Console.WriteLine("The roots are " x1+ x2);
+            
+
+//BOOLEAN TYPE
+
+string myName = "Oladipupo Excellence";
+            string myname;
+            bool isMyName;
+            Console.WriteLine("What is your name");
+            myname = Console.ReadLine();
+            isMyName= myName == myname;
+            Console.WriteLine("Therefore myName is " + isMyName);
+
+
+
+
+int MyNumber = 20;
+            int Mynumber;
+            Console.WriteLine("Enter a number of your choice");
+            Mynumber = Convert.ToInt32(Console.ReadLine());
+            bool mynumber;
+            mynumber = MyNumber == Mynumber;
+            Console.WriteLine("Therefore your input is " + mynumber);
+
+
+
+//
+
+int value;
+            string myValue;
+            Console.WriteLine("Enter an integer value of your choice");
+            value=Convert.ToInt32(Console.ReadLine());
+            myValue=( value< 10) ? "value less than 10":" value greater than 10";
+            Console.WriteLine("Your value is " + myValue);
+
+
+//SWITCH STATEMENT
+
+string weather;
+            string equipment;
+            Console.WriteLine("Enter a weather condition ");
+            weather = Console.ReadLine();
+            switch (weather)
+            {
+                case "Sunny":
+                    equipment = "sunglasses";
+                    break;
+                case "Rain":
+                    equipment = "Umbrella";
+                    break;
+                case "Cold":
+                default:
+                         equipment = "Jacket";
+                    break;
+                        
+            }
+            Console.WriteLine("Your weather condition "+ weather + " reqires a " + equipment);
+
+
+
+double  a, b, c;
+            double  x1, x2;
+            double  d1,d2,d3,d4;
+            Console.WriteLine("Enter three integer values: a,b,c");
+            a = Convert.ToDouble(Console.ReadLine());
+            b= Convert.ToDouble(Console.ReadLine());
+            c = Convert.ToDouble(Console.ReadLine());
+        
+            d2 = (b*b) - (4 * a * c);
+            d2= Convert.ToDouble(Console.ReadLine());
+            if(d2 <0)
+            {
+                Console.WriteLine("This is an imaginary root");
+            }
+            else
+            {
+                d1 = -b;
+                d1 = Convert.ToDouble(Console.ReadLine());
+                d3 = d1+ d2;
+                d3 = Convert.ToDouble(Console.ReadLine());
+                d4 = d1 - d2;
+                d4 = Convert.ToDouble(Console.ReadLine());
+                x1 = d3 / (2 * a);
+                x1 = Convert.ToDouble(Console.ReadLine());
+                x2 = d4 / (2 * a);
+                x2 = Convert.ToDouble(Console.ReadLine());
+                Console.WriteLine("The roots are  : "+ x1+ x2);
+            }
+
+
+//
+int i;
+            int sum = 0;
+            Console.WriteLine("Enter a value");
+            i = Convert.ToInt32(Console.ReadLine());
+            do
+            {
+                Console.WriteLine("{0}", i++);
+                sum = sum+i ;
+            }
+            while (i <= 10);
+            Console.WriteLine("The sum is {0}", sum);
+
+
+//int n;
+            Console.WriteLine("Enter a positive integer");
+            n = Convert.ToInt32(Console.ReadLine());
+            int i = 1;
+            int sum = 0; 
+            do
+            {
+                Console.WriteLine("The numbers are {0}", i++);
+                sum = sum + i;
+            }
+            while (i<=n);
+            Console.WriteLine("Their sum is {0}", sum);//
+
+
+
+int n;
+            Console.WriteLine("Enter a positive integer");
+            n = Convert.ToInt32(Console.ReadLine());
+            int sum = 0;
+            for(int i=0; i<n; i++)
+            {
+                Console.WriteLine("{0}", i);
+                sum = sum + i;
+            }
+            Console.WriteLine("Their sum is {0}", sum);
+
+
+//TUTORIAL 2
+
+ double temp;
+            int freezing_point = 32;
+            Console.WriteLine("Enter a temperature value");
+            temp = Convert.ToDouble(Console.ReadLine());
+            if (temp < freezing_point)
+            {
+                Console.WriteLine("The temperature is below freezing point");
+            }
+            else if (temp > freezing_point)
+            {
+                Console.WriteLine("The temperature is above freezing point");
+            }
+            else if (temp == freezing_point)
+            {
+                Console.WriteLine("The temperature is at the freezing point");
+            
+
+
+// QUESTION 2
+
+ int overtime, hrs,value;
+            int normal_rate;
+            Console.WriteLine("Enter the amount of hours worked");
+            hrs = Convert.ToInt32(Console.ReadLine());
+           
+                normal_rate = hrs * 50;
+                if ((hrs <= 12) && (hrs > 0))
+                {
+                    Console.WriteLine("The payment of the worker is $" + normal_rate);
+                }
+                else if (hrs== 0)
+                {
+                    Console.WriteLine("The payment of the worker is $" + normal_rate);
+                }
+            
+            else if (hrs>12)
+            {
+                value = 12 * 50;
+                overtime = 90*(hrs-12) + value;
+                Console.WriteLine("The payment of the worker is $" + overtime);
+            }
+            else if (hrs < 0)
+            {
+                Console.WriteLine("The worker is not to be paid");
+            }
+
+
+
+//LECTURE 3
+
+Q1.
+
+int i=0;
+            int sum = 0;
+            Console.WriteLine("The numbers are:");
+            do
+            {
+                sum = sum + i;
+                Console.WriteLine(i++);
+                
+            }
+            while (i <= 10);
+
+            Console.WriteLine("The sum of these numbers are" + sum);
+
+Q2
+
+int n;
+            Console.WriteLine("Enter a positive number of your choice");
+            n = Convert.ToInt32(Console.ReadLine());
+            Console.WriteLine("The numbers are:");
+            for(int i=1;i<=n;i++)
+            {
+                if (i==2)
+                    continue;
+                Console.WriteLine(i);
+
+}
+
+Q3.  GOTO
+
+
+//int n;
+            Console.WriteLine("Enter a positive number of your choice");
+            n = Convert.ToInt32(Console.ReadLine());
+            Console.WriteLine("The numbers are:");
+            for(int i=1;i<=n;i++)
+            {
+                if (i==2)
+                    goto line;
+                Console.WriteLine(i);
+            }
+            line:
+            Console.WriteLine("This code cannot be executed"); 
+
+EX 1
+//int n;
+            int sum = 0;
+            Console.WriteLine("Enter a positive number of your choice");
+            n = Convert.ToInt32(Console.ReadLine());
+            Console.WriteLine("The numbers are:");
+            for (int i = 1; i <= n; i++)
+            {
+
+                Console.WriteLine(i);
+                sum += i;
+            }
+            Console.WriteLine("The sum of these numbers are {0}", sum);
+            
+EX2.
+
+//int n;
+            int i = 0;
+            int sum = 0;
+            Console.WriteLine("Enter a positive number of your choice");
+            n = Convert.ToInt32(Console.ReadLine());
+            Console.WriteLine("The numbers are:");
+            do
+            {
+                i++;
+                sum += i;
+                Console.WriteLine(i);
+            }
+            while (i <= n);
+            Console.WriteLine("The sum of these numbers are: {0}", sum);
+
+
+//
+ int a, b,c,d;
+            Console.WriteLine("Enter two values");
+            a = Convert.ToInt32(Console.ReadLine());
+            b = Convert.ToInt32(Console.ReadLine());
+            if((a>10)&&(b>10))
+            {
+                Console.WriteLine("Dear user enter two new values");
+                c = Convert.ToInt32(Console.ReadLine());
+                d = Convert.ToInt32(Console.ReadLine());
+            }
+
+
+//try
+            {
+                int a, b, c;
+                Console.WriteLine("Enter two values");
+                a = Convert.ToInt32(Console.ReadLine());
+                b = Convert.ToInt32(Console.ReadLine());
+                c = a / b;
+                Console.WriteLine("The division of these numbers is {0}", c);
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.Message);
+            }
+
+
+FOR EACH LOOP- Instead of index.
+for each loo give you a READ ONLY ACCESS.
+int[] val = { 5, 2, 17, 0, 8 };
+           foreach(int look in val)
+            {
+                Console.WriteLine(look); 
+            }
+
+// IMPLICT AND EXPLICIT CONVERSION
+     
+byte destinationVar;
+            short sourceVar = 7;
+            destinationVar= (Byte) sourceVar;
+            Console.WriteLine("soureVar val:{0}", sourceVar);
+            Console.WriteLine("destinationVar val:{0}", destinationVar);
+
+
+int pow;
+            for (int i = 1; i <= 10; i++)
+            {
+                pow = (i * i);
+                Console.WriteLine(1 / pow);
+            }
+
+//EX 1
+
+ double pow,pow1;
+            double sum = 0;
+            Console.WriteLine("The inverse of the numbers (1/(i*i)) are:");
+            for (double i = 1; i <= 10; i++) 
+            {
+               
+                pow = i * i;
+                pow1 = 1 / pow;
+                Console.WriteLine(pow1);
+                sum += pow1;
+            }
+            Console.WriteLine("The sum of all these inverses are {0}", sum);
+
+
+//EX2
+
+ double pow,pow1;
+            double sum = 0;
+            Console.WriteLine("The fraction of the numbers in the form (8/(i^3)) are:");
+            for (double i = 1; i <= 10; i++) 
+            {
+
+                pow = Math.Pow(i, 3);
+                pow1 = 8 / pow;
+                Console.WriteLine(pow1);
+                sum += pow1;
+            }
+            Console.WriteLine("The sum of all these fractions is {0}", sum);
+
+
+//Ex 3
+int a, b, c,d;
+            Console.WriteLine("Enter two values of your choice:");
+            a = Convert.ToInt32(Console.ReadLine());
+            b = Convert.ToInt32(Console.ReadLine());
+            if((a&b)>10)
+            {
+                Console.WriteLine("The previously entered numbers have been rejected");
+                Console.WriteLine("Enter two other integer values");
+                c = Convert.ToInt32(Console.ReadLine());
+                d = Convert.ToInt32(Console.ReadLine());
+            }
+            Console.WriteLine("Thank you very much dear user");
+
+
+Ex 4
+
+int var1, var2;
+            Console.WriteLine("Enter two integer values");
+            var1 = Convert.ToInt32(Console.ReadLine());
+            var2 = Convert.ToInt32(Console.ReadLine());
+            if(var1>10)
+            {
+                Console.WriteLine("var1 is greater than 10");
+            }
+            else if(var2>10)
+            {
+                Console.WriteLine("var2 is greater than 10");
+            }
+
+
+string m_number;
+                int n_courses;
+                int credit, score,quality_point,grade;
+            
+                Console.WriteLine("Enter your matric number");
+                m_number = Convert.ToString(Console.ReadLine());
+                Console.WriteLine("Enter the number of courses taken in the semester");
+                n_courses = Convert.ToInt32(Console.ReadLine());
+                for(credit=0;credit<=n_courses;credit++)
+                {
+                    Console.WriteLine("Enter the credit unit of each of your courses");
+                credit = Convert.ToInt32(Console.ReadLine());
+                }
+            Console.WriteLine("Enter your score");
+            score = Convert.ToInt32(Console.ReadLine());
+
+            if (( score<= 100) && (score >= 70))
+            {
+                Console.WriteLine("grade-5");
+            }
+            else if ((score < 70) && (score >= 60))
+            {
+                Console.WriteLine("grade-4");
+            }
+            else if ((score < 60) && (score >= 50))
+            {
+                Console.WriteLine("grade-3");
+            }
+            else if ((score < 50) && (score >= 45))
+            {
+                Console.WriteLine("grade-2");
+            }
+            else if ((score < 45) && (score >= 40))
+            {
+                Console.WriteLine("grade-1");
+            }
+            else if ((score < 40) && (score >= 0))
+            {
+                Console.WriteLine("grade-0");
+            }
+            else if (score < 0)
+            {
+                Console.WriteLine("Error");
+            }
+            grade = Convert.ToInt32(Console.ReadLine());
+            quality_point = grade * credit;
+
+
+
+//
+double x, y, v;
+
+            Console.WriteLine("This program is to find the magnitude of a vector");
+            Console.WriteLine("Enter the value of x and y");
+            x = Convert.ToDouble(Console.ReadLine());
+            y = Convert.ToDouble(Console.ReadLine());
+            v = (Math.Pow(x, 2) )+( Math.Pow(y, 2));
+           
+            Console.WriteLine("The magnitude of the vector is |v|={0}", v);
+
+
+ double[] mag = {2,3};
+            double  v,p;
+
+            Console.WriteLine("This program is to find the magnitude of a vector");
+            Console.WriteLine("The x value is {0}",mag[0]);
+            Console.WriteLine("The y value is {0}",mag[1]);
+            p = (Math.Pow(mag [0], 2) )+( Math.Pow(mag [1], 2));
+            v = Math.Sqrt(p);
+           
+            Console.WriteLine("The magnitude of the vector is |v|={0}", v);
+
+
+//
+int sum = 0;
+           for(int i=1;i<=100; i++)
+            {
+                if ((i % 2) != 0)
+                {
+                    Console.WriteLine(i);
+                    sum += i;
+                }
+                
+            }
+           Console.WriteLine("The sum of odd numbers are{0}",sum);
+
+//
+int sum = 0;
+           for(int i=1;i<=100; i++)
+            {
+                if((i%2)==0)
+                {
+                Console.WriteLine(i);
+                sum += i;
+                 }
+            }
+           Console.WriteLine("The sum of even numbers are {0}",sum);
+
+// EX4
+double a, b, c, x1, x2,det,B1,B2;
+            Console.WriteLine("Enter three values: a,b,c");
+            a = Convert.ToDouble(Console.ReadLine());
+            b=Convert.ToDouble(Console.ReadLine());
+            c= Convert.ToDouble(Console.ReadLine());
+
+            det = (b * b) - (4 * a * c);
+            if(det<0)
+            {
+                Console.WriteLine("These are imaginary roots");
+            }
+            else if(det>0)
+            {
+               B1= -b + Math.Sqrt(det);
+                x1 = B1 / (2 * a);
+                B2 = -b - Math.Sqrt(det);
+                x2 = B2 / (2 * a);
+                Console.WriteLine("The roots are {0},{1}", x1, x2);
+
+LECTURE 4
+
+ int i,n;
+            int[] plus = new int[n];
+            int sum = 0;
+            Console.WriteLine("Enter the number of inputs");
+            n=Convert.ToInt32(Console.ReadLine());
+            for (i = 0; i < n; i++) 
+            {
+                Console.WriteLine("Enter 5 elements of your choice");
+                plus[i]=Convert.ToInt32(Console.ReadLine());
+                sum =sum+plus[i];
+            }
+            Console.WriteLine("The sum is {0}", sum);
+
+
+EX2
+
+ int[,]  matrix = { { 1, 2, 3, 4 }, { 5, 6, 7, 8 }, { 9, 10 , 11 , 12} };
+            for(int i=0;i<3;i++)
+            {
+                
+                for (int j = 0; j < 4; j++)
+                {
+                    Console.Write("{0}" ,matrix[i,j]);
+                    
+                }
+                Console.WriteLine();
+
+
+
+            double[] p = new double[2];
+            Console.WriteLine("Enter two values x,y:");
+            p[0] =Convert.ToDouble(Console.ReadLine());
+            p[1] = Convert.ToDouble(Console.ReadLine());
+           
+                double v =(Math.Pow(p[0], 2)) + (Math.Pow(p[1], 2));
+                double mag = Math.Sqrt(v);
+            Console.WriteLine("The magnitude of these numbers is{0}",mag );
+               
+	USING THE FOR LOOP
+
+double[] p = new double[2];
+            Console.WriteLine("Enter two values x,y:");
+           
+            for (int i = 0; i <= 1; i++)
+            {
+                p[i] = Convert.ToDouble(Console.ReadLine());
+            }
+            double v = (Math.Pow(p[0], 2)) + (Math.Pow(p[1], 2));
+            double mag = Math.Sqrt(v);
+            Console.WriteLine("The magnitude of these numbers is{0}", mag);
+            }
+
+
+static int calculatesum(int number1, int number2)
+        {
+            return number1 + number2;
+        }
+        static double calculatesum(double number1, double number2)
+        {
+            return number1 + number2;
+        }
+        static void Main(string[] args)
+        {
+           
+             int a= calculatesum(5,6);
+            double b= calculatesum(4.9,5.8);
+            Console.WriteLine("{0},{1}", a, b);
+
+
+public class Date
+
+
+
+    {
+        private int month = 7;
+        public int Month
+        {
+            get
+            {
+                return month;
+            }
+            set
+            {
+                if ((value > 0) && (value < 13))
+                {
+                    month = value;
+                }
+            }
+        }
+    }
+    internal class Program
+
+ static void Main()
+        {
+            Date var = new Date();
+            var.Month = 14;
+            Console.WriteLine(var.Month);
+
+
+        }
+    }
+}
+
+
+ public class car
+    {
+        string make;
+        public car(string val)
+        { 
+            make = val; 
+        }
+        ~car()
+        {
+            Console.WriteLine("Inside the destructor");
+        }
+        public string getmake()
+        {
+            return make;
+        }
+    }
+    internal class Program
+    {
+
+        static void Main()
+        {
+           
+            Console.WriteLine("Enter a string value ");
+            string make = Console.ReadLine();
+            car obj = new car(make);
+            Console.WriteLine("car Type{0}", obj.getmake());
+            
+
+        }
+    }
+}
+
+
+
+ class A
+    {
+        public virtual void print()
+        {
+            
+            Console.WriteLine("it is well");
+        }
+        class B:A
+        {
+            int a;
+            public override void print ()
+            {
+                Console.WriteLine("Enter an integer value");
+            }
+
+        }
+internal class Program
+    {
+        static void Main()
+        {
+            A objB;
+          objB = new A();
+            objB.print();
+
+            objA = new B();
+            objB.print();
+
+
+
+
+
+
+ class A
+    {
+        public virtual void print(int number)
+        {
+
+        }
+        class B : A
+        {
+
+            public override void print(int number)
+            {
+                for (int i = 0; i < number; i++)
+                {
+                    Console.WriteLine("It is well");
+                }
+            }
+
+internal class Program
+    {
+        static void Main()
+        {
+
+            A obj = new B();
+            obj.print(10);
+
+
+ class A
+    {
+        public virtual void print(int number)
+        {
+
+        }
+    }
+        class B:A
+        {
+
+            public override void print(int number)
+            {
+                for (int i = 0; i < number; i++)
+                {
+Console.WriteLine("It is well");
+                }
+            }
+
+        }
+    
+    internal class Program
+    {
+        static void Main()
+        {
+
+            A obj = new B();
+            obj.print(10);
+
+
+int[,] numbers = new int  [3,4];
+            
+            for (int i = 0; i <= 3; i++)
+
+            {
+                Console.WriteLine("Enter three values{0}", numbers);
+                numbers[i, 0] = Convert.ToInt32(Console.ReadLine());
+
+                for (int j = 0; j <= 4; j++)
+                {
+                    Console.WriteLine("Enter four values{0}", numbers);
+                    numbers[i,j] = Convert.ToInt32(Console.ReadLine());
+                    Console.WriteLine(numbers[i, j]);
+                }
+            }
+
+
+
+            int[,] numbers = { { 1, 2 }, { 4, 5 }, { 7, 6 } };
+            for (int i = 0; i < 3; i++)
+            {
+                for (int j = 0; j < 2; j++)
+                {
+                    Console.WriteLine("{0}",numbers[i, j]);
+                }
+                Console.WriteLine();
+            }
+
+// OBJECTS
+
+class Taxi
+    {
+        public bool isInitialized;
+        public Taxi()//Constructor havig no parameter
+
+        {
+            isInitialized = true;
+        }
+}
+        class TestTaxi
+        {
+            static void Main(string[] args)
+            {//The constructor is initializing the Object ie calling it to action.
+                Taxi t = new Taxi();
+                Console.WriteLine(t.isInitialized);
+            }
+        }
+
+//Class Activity 1
+
+namespace ConsoleApp31
+{
+    class Car
+    {
+        public string Make;
+        public Car(string amake)
+        {
+            Make = amake;
+        }
+        ~Car()
+        {
+            Console.WriteLine("Inside the destructor");
+        }
+    }
+        class TestMake
+        {
+            static void Main(string[] args)
+        {
+Car car = new Car("make of a car");
+            Console.WriteLine(car.Make);
+        }
+            
+        }
+    }
+
+// EX 2
+
+
+namespace ConsoleApp31
+{
+
+    public class Year
+    {
+        public int week = 52;
+        public int Week
+        {
+            get
+            {
+                return week;
+            }
+            set
+            {
+                week = value;
+            }
+        }
+    }
+        class TestYear
+        {
+            static void Main(string[] args)
+ {
+                Year var = new Year();//Default Constructor
+                Console.WriteLine(var.Week);
+                var.Week = 52;
+            }
+        }
+    }
+
+//EX3
+
+namespace ConsoleApp31
+{
+
+    public class student
+    {
+        public string surname;
+        public string matNo;
+        public int mathscore;
+        public int englishscore;
+
+        public student()
+        {
+
+        }
+        public student(string asurname, string amatNo,int amathscore,int aenglishscore)
+        {
+            surname = asurname; 
+matNo = amatNo;
+            mathscore = amathscore;
+            englishscore = aenglishscore;
+        }
+    }
+
+// Question: How will I do this that it will bring the entire details of the student at once.    
+
+what does it mean by you do not instantiate a static member
+Properties cannot be passed as a variable which means that it cannot be initialized
+
+
+
+
+ double[] mag = {2,6};
+            double v,q;
+            Console.WriteLine("Enter two values");
+          
+
+            for (int i=0;i<mag.Length;i++)
+            {
+                mag[i] = Convert.ToInt32(Console.ReadLine());
+
+                v = Math.Pow(mag[0],2) +Math.Pow(mag[1],2);
+                q = Math.Sqrt(v);
+                Console.WriteLine("Their magnitude is {0}", q);
+
+
+FUNCTIONS AND ARRAYS
+
+
+ double sum = 0;
+            double[] num = new double[5];
+            Console.WriteLine("Enter the value of 5 numbers");
+            for (int i = 0; i < 5; i++)
+            {
+                num[i] = Convert.ToDouble(Console.ReadLine());
+              
+                sum = sum + num[i];
+            }
+                double mean = sum / 5;
+                Console.WriteLine(mean);
+            }
+
+
+
+ for (n = 0; n < 20; n++)
+            {
+                for (i = 1; i <20; i++)
+                    if (Math.Sqrt(n)==i)
+                    {
+                        Console.WriteLine("A perfect square");
+                    }
+            }
+            return n;
+        }
+           
+
+            static void Main(string[] args)
+            {
+                int k,v;
+            for (k = 1; k < 20; k++)
+            {
+                for (v = 1; v < 20; v++)
+                {
+                    Console.WriteLine(findNextsquare(k, v));
+                }
+            }
+            }
+            }
+        }
+
+
+
+// WINDOWS 
+
+CLASS ACTIVITY 1
+
+ private void btnOK_Click(object sender, EventArgs e)
+        {
+            string Output;
+
+            Output = "Name :" + this.txtName.Text + "\r\n";
+            Output += "Age :" + this.txtAge.Text + "\r\n";
+            Output += "Address :" + this.txtAddress.Text + "\r\n";
+            Output += "Occupation :" + this.txtoccupation.Text + "\r\n";
+
+            this.txtoutput.Text = Output;
+        }
+
+        private void btnHelp_Click(object sender, EventArgs e)
+        {
+            string Output;
+
+            Output = "Name = Your name is "+ this.txtName.Text + "\r\n";
+            Output += "Age = Your age is "+ this.txtAge.Text + "\r\n";
+            Output += "Address = Your address is " + this.txtAddress.Text + "\r\n";
+            Output += "Occupation= Your occupation is "+ this.txtoccupation.Text + "\r\n";
+
+            this.txtoutput.Text = Output;
+
+
+
+
+ public class Time
+        {
+            private int hour=7;
+            private int minute=28;
+            private int second=36;
+            
+            public int Hour
+            {
+                get
+                {
+                    return hour;
+                }
+
+                set
+                {
+                    if ((value > 0) && (value < 23))
+                    {
+                        hour = value;
+                        Console.WriteLine("True value");
+                    }
+                    else
+                    {
+                        Console.WriteLine("false value");
+                    }
+                }
+            }
+public int Minute
+            {
+                get
+                {
+                    return minute;
+                }
+                set
+                {
+                    if ((value > 0) && (value < 59))
+                    {
+                        minute = value;
+                        Console.Write("True value");
+                    }
+                    else
+                    {
+                        Console.Write("false value");
+                    }
+                }
+            }
+
+            public int Second
+            {
+ get
+                {
+                    return second;
+                }
+                set
+                {
+                    if((value>0)&& (value <59))
+                    {
+                        second=value;
+                        Console.WriteLine("True value");
+                    }
+                    else
+                    {
+                        Console.WriteLine("false value");
+                    }
+                }
+            }
+        }
+               
+        static void Main(string[] args)
+        {
+            Time tim = new Time();
+            Console.WriteLine(tim.Hour);
+            tim.Hour = 5;
+
+            Time tom = new Time();
+            Console.WriteLine(tom.Minute);
+            tom.Minute = 57;
+            
+
+            Time tock = new Time();
+            Console.WriteLine(tock.Second);
+            tock.Second = 9;
+
+        }
+    }
+}

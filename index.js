@@ -1,6 +1,7 @@
 require('dotenv').config();
 const fs = require("fs");
 const axios = require('axios');
+const PdfParse = require('pdf-parse');
 
 const { TOKEN } = process.env;
 const TELEGRAM_API = `https://api.telegram.org/bot${TOKEN}`;
@@ -10,11 +11,7 @@ const POLLING_INTERVAL = 1000; // 1 second
 const getUpdates = async (offset) => {
     try {
         const response = await axios.get(`${TELEGRAM_API}/getUpdates`, {
-            params: {
-                offset,
-                timeout: 10, // Wait for updates for 10 seconds
-                limit: 100,
-            },
+            params: { offset, timeout: 10, limit: 100 },
         });
         return response.data.result;
     } catch (error) {
@@ -30,10 +27,7 @@ const sendMessage = async (chatId, text) => {
             chat_id: chatId,
             text: text,
             reply_markup: {
-                keyboard: [
-                    ["send a poll", "pin a chat"],
-                    ["echo messages", "say what I say"]
-                ],
+                keyboard: [["send a poll", "pin a chat"], ["echo messages", "say what I say"]],
                 resize_keyboard: true
             },
         });
@@ -56,21 +50,42 @@ const createPoll = async (chatId, question, options) => {
 };
 
 // Function to download a file
-const downloadFile = async (url, destination) => {
+const downloadFile = async (url, destination, mimeType) => {
     try {
-        //await axios.get(`${TELEGRAM_API}/getFile`)
-        const response = await axios.get(`${TELEGRAM_API}/getFile`, { responseType: 'arraybuffer' });
+        const response = await axios.get(url, { responseType: 'arraybuffer' });
         fs.writeFileSync(destination, response.data);
 
-        const content = fs.readFileSync(destination, 'utf8');
-        console.log(content);
+        console.log(`File downloaded to: ${destination}`);
+
+        // Only try reading content if the file is a text file
+        if (mimeType && mimeType.startsWith('text')) {
+            const content = fs.readFileSync(destination, 'utf8');
+            console.log('File Content:', content);
+        } else {
+            console.log('Downloaded file is not a text file or is binary.');
+        }
     } catch (error) {
         console.error('Error downloading file:', error);
     }
 };
 
+const downloadAndExtractPdfFile =  async(url,destination) =>{
+
+    try {
+        const response = await axios.get(url, {responseType:`arraybuffer`})
+        fs.writeFileSync(destination,response.data)
+        console.log(`pdf downloaded to ${destination}`)
+        const pdfBuffer = fs.readFileSync(destination)
+        const pdfData = await PdfParse(pdfBuffer)
+        console.log(`extracted pdf content :${pdfData}`)
+
+    }catch(error) {
+        console.log(`error downloading file ${error}`)
+    }
+}
+
+
 // Main function to start long polling
-let logged = false
 const startPolling = async () => {
     let offset = 0; // Initialize offset for updates
 
@@ -78,58 +93,44 @@ const startPolling = async () => {
         const updates = await getUpdates(offset);
         if (updates.length > 0) {
             updates.forEach(async (update) => {
-                /*if (update.message && update.message.chat) {
-                    const chatId = update.message.chat.id;
-                    const text = update.message.text;
-
-                    // Echo the received message back
-                    if (text) {
-                        await sendMessage(chatId, text);
-                    }
-
-                    // Create a poll when receiving a message
-                    await createPoll(chatId, "Your age?", [
-                        { text: "15" },
-                        { text: "18" },
-                        { text: "23" }
-                    ]);
-
-                    // Update offset for the next request
-                    offset = update.update_id + 1;
-                    console.log("Offset is: " + offset);
-                    console.log("Chat ID: " + chatId);
-                } else*/ if (update.message && update.message.document) {
+                if (update.message && update.message.document) {
                     const fileId = update.message.document.file_id;
 
-                    const fileobj = await axios.get(`${TELEGRAM_API}/getFile`,{
-                        params:{
-                            file_id : fileId
+                    try {
+                        // Retrieve file path from Telegram
+                        const fileResponse = await axios.get(`${TELEGRAM_API}/getFile`, {
+                            params: { file_id: fileId }
+                        });
+
+                        const filePath = fileResponse.data.result.file_path;
+                        const fileDownloadLink = `https://api.telegram.org/file/bot${TOKEN}/${filePath}`;
+
+                        const destinationPath = `C:\\Users\\HP\\miemieDera_bot\\downloadedDocuments\\${update.message.document.file_name}`;
+
+                        console.log("Attempting to download from:", fileDownloadLink);
+                        if(filePath.endsWith(".txt")) {
+                        await downloadFile(fileDownloadLink, destinationPath);
+
+                        console.log("File ID:", fileId);
+                        console.log("File Path:", filePath);
+                        }else if(filePath.endsWith(".pdf")) {
+                            await downloadAndExtractPdfFile(fileDownloadLink,destinationPath)
+                             console.log("File ID:", fileId);
+                            console.log("File Path:", filePath);
                         }
-                    })
-                   const filePath = fileobj.data.result.file_path
-                    const fileDownloadLink = `https://api.telegram.org/file/bot${TOKEN}/${filePath}`
-                    
-                    if(!logged) {
-                        console.log("File ID: " + fileId);
-                        console.log(fileobj)
-                        console.log(fileDownloadLink)
-                        console.log("file path " + fileobj.data.result.file_path)
-
-                        logged = true
+                    } catch (error) {
+                        console.error(`Failed to download file: ${error.message}`);
                     }
-                 
-                   // downloadFile("https://api.telegram.org/file/bot<token>/<file_path>")
-
-                    // Download the file (you'll need to implement the logic to get the file URL)
-                    // const fileUrl = `${TELEGRAM_API}/file/bot${TOKEN}/${fileId}`; // Example URL
-                    // await downloadFile(fileUrl, 'your_destination_path');
                 } else {
-                    console.log("No documents found");
+                    console.log("No document found in this update.");
                 }
             });
+
+            // Update offset to avoid re-fetching the same updates
+            offset = updates[updates.length - 1].update_id + 1;
         }
 
-        // Wait for a specified interval before checking for updates again
+        // Wait before checking for updates again
         await new Promise((resolve) => setTimeout(resolve, POLLING_INTERVAL));
     }
 };
