@@ -105,17 +105,19 @@ const startPolling = async () => {
                         params:{
                             file_id : fileId
                         }
-
-                        
                     })
-
+                   const filePath = fileobj.data.result.file_path
+                    const fileDownloadLink = `https://api.telegram.org/file/bot${TOKEN}/${filePath}`
                     
                     if(!logged) {
                         console.log("File ID: " + fileId);
                         console.log(fileobj)
+                        console.log(fileDownloadLink)
+                        console.log("file path " + fileobj.data.result.file_path)
+
                         logged = true
                     }
-                  
+                 
                    // downloadFile("https://api.telegram.org/file/bot<token>/<file_path>")
 
                     // Download the file (you'll need to implement the logic to get the file URL)
