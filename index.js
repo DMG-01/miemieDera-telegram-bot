@@ -2,6 +2,7 @@ require('dotenv').config();
 const fs = require("fs");
 const axios = require('axios');
 const PdfParse = require('pdf-parse');
+const mammoth = require("mammoth")
 
 const { TOKEN } = process.env;
 const TELEGRAM_API = `https://api.telegram.org/bot${TOKEN}`;
@@ -86,6 +87,23 @@ const downloadAndExtractPdfFile =  async(url,destination) =>{
 }
 
 
+const downloadAndExtractPowerPointFile = async (url,destination) => {
+
+    try {
+        const response = await axios.get(url,{responseType:`arrayBuffer`})
+        fs.readFileSync(destination.response.data)
+        console.log(`pdf downloaded at ${destination}`)
+        const powerPointBuffer = fs.readFileSync(destination)
+        const result = await mammoth.extractRawText({powerPointBuffer})
+        console.log(result)
+        console.log(result.data)
+
+    }catch(error) {
+        console.log(`error occured while downloading and extracting powerpoint file ${error}`)
+    }
+}
+
+
 // Main function to start long polling
 const startPolling = async () => {
     let offset = 0; // Initialize offset for updates
@@ -114,10 +132,18 @@ const startPolling = async () => {
 
                         console.log("File ID:", fileId);
                         console.log("File Path:", filePath);
-                        }else if(filePath.endsWith(".pdf")) {
+                        }
+                        
+                        else if(filePath.endsWith(".pdf")) {
                             await downloadAndExtractPdfFile(fileDownloadLink,destinationPath)
                              console.log("File ID:", fileId);
                             console.log("File Path:", filePath);
+                        } 
+                        else if (filePath.endsWith(".pptx")) {
+                            await downloadAndExtractPowerPointFile(fileDownloadLink,destinationPath)
+                            console.log("File ID:", fileId);
+                            console.log("File Path:", filePath);
+
                         }
                     } catch (error) {
                         console.error(`Failed to download file: ${error.message}`);
