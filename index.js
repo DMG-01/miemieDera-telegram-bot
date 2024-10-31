@@ -9,6 +9,9 @@ const { TOKEN } = process.env;
 const TELEGRAM_API = `https://api.telegram.org/bot${TOKEN}`;
 const POLLING_INTERVAL = 1000; // 1 second
 
+
+cohere.init(process.env.COHERE_API_KEY);
+
 // Function to get updates
 const getUpdates = async (offset) => {
     try {
@@ -98,11 +101,26 @@ const downloadAndExtractPowerPointFile = async (url,destination) => {
         const result = await mammoth.extractRawText({powerPointBuffer})
         console.log(result)
         console.log(result.data)
+        console.log(explainText(result.data));
+
+
 
     }catch(error) {
         console.log(`error occured while downloading and extracting powerpoint file ${error}`)
     }
 }
+
+async function explainText(input) {
+    const response = await cohere.generate({
+        model: 'command',
+        prompt: `Explain this text in simpler terms: ${input}`,
+        max_tokens: 50,
+    });
+    console.log("Explanation:", response.body.generations[0].text);
+}
+
+
+
 
 
 // Main function to start long polling
