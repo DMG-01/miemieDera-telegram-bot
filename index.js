@@ -3,6 +3,7 @@ const fs = require("fs");
 const axios = require('axios');
 const PdfParse = require('pdf-parse');
 const mammoth = require("mammoth")
+const {cohere} = require("cohere-ai")
 
 const { TOKEN } = process.env;
 const TELEGRAM_API = `https://api.telegram.org/bot${TOKEN}`;
