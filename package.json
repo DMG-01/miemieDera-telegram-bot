@@ -4,7 +4,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "start": "nodemon index.js",
+    "start": "nodemon new.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "",
@@ -22,8 +22,12 @@
     "node-fetch": "^2.7.0",
     "node-telegram-bot-api": "^0.66.0",
     "nodemon": "^3.1.7",
+    "officeparser": "^5.0.0",
     "parser": "^0.1.4",
     "pdf-parse": "^1.1.1",
-    "save": "^2.9.0"
+    "pptx2json": "^0.0.10",
+    "save": "^2.9.0",
+    "unzipper": "^0.12.3",
+    "xml2js": "^0.6.2"
   }
 }
