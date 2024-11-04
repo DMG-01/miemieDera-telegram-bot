@@ -21,6 +21,7 @@ const groq = new Groq({ apiKey: process.env.GROQ_API_KEY });
   const chatCompletion = await getGroqChatCompletion(text);
   // Print the completion returned by the LLM.
   console.log(chatCompletion.choices[0]?.message?.content || "");
+  return(chatCompletion.choices[0]?.message?.content || "")
 }
 
  async function getGroqChatCompletion(textToExplain) {
@@ -109,7 +110,8 @@ const downloadAndExtractPdfFile =  async(url,destination) =>{
         const pdfData = await PdfParse(pdfBuffer)
         //console.log(`extracted pdf content :${pdfData.text}`)
         //fs.writeFileSync("newpdf",pdfData.text)
-        main(pdfData.text)
+        const summarizedText = main(pdfData.text)
+        return summarizedText
 
     }catch(error) {
         console.log(`error downloading file ${error}`)
@@ -201,7 +203,8 @@ const startPolling = async () => {
                         }
                         
                         else if(filePath.endsWith(".pdf")) {
-                            await downloadAndExtractPdfFile(fileDownloadLink,destinationPath)
+                          const text =   await downloadAndExtractPdfFile(fileDownloadLink,destinationPath)
+                          sendMessage(chatId,text)
                              console.log("File ID:", fileId);
                             console.log("File Path:", filePath);
                         } 
