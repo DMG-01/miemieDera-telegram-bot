@@ -58,7 +58,7 @@ const sendMessage = async (chatId, text) => {
             chat_id: chatId,
             text: text,
             reply_markup: {
-                keyboard: [["send a poll", "pin a chat"], ["echo messages", "say what I say"]],
+                keyboard: [["Summarize a Text", "pin a chat"], ["echo messages", "say what I say"]],
                 resize_keyboard: true
             },
         });
@@ -218,8 +218,13 @@ const startPolling = async () => {
 
                         }
                     } catch (error) {
-                        console.error(`Failed to download file: ${error.message}`);
+                        if(error.message.includes("context_length_exceeded")) {
+                            sendMessage(chatId,"exceeded the file limit. you sef read naw😭😖")
+                            console.error(`Failed to process file: ${error.message}`);
+                        }else {
+                        console.error(`Failed to process file: ${error.message}`);
                     }
+                }
                 } else {
                     console.log("No document found in this update.");
                 }
