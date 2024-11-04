@@ -179,6 +179,7 @@ const startPolling = async () => {
             updates.forEach(async (update) => {
                 if (update.message && update.message.document) {
                     const fileId = update.message.document.file_id;
+                    const chatId = update.message.chat.id
 
                     try {
                         // Retrieve file path from Telegram
@@ -205,7 +206,8 @@ const startPolling = async () => {
                             console.log("File Path:", filePath);
                         } 
                         else if (filePath.endsWith(".pptx")) {
-                            await downloadAndExtractPowerPointFile(fileDownloadLink,destinationPath)
+                            sendMessage(chatId,"Sorry we cannot process Powerpoint file just yet, but we would surely let you know when we can.if you have a pdf or .docx version of the text we can process it😊😇")
+                            //await downloadAndExtractPowerPointFile(fileDownloadLink,destinationPath)
                             console.log("power point file")
                             console.log("File ID:", fileId);
                             console.log("File Path:", filePath);
