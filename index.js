@@ -203,6 +203,7 @@ const startPolling = async () => {
                         }
                         
                         else if(filePath.endsWith(".pdf")) {
+                            sendMessage(chatId,"plese wait while we process your document😇💡")
                           const text =   await downloadAndExtractPdfFile(fileDownloadLink,destinationPath)
                           sendMessage(chatId,text)
                              console.log("File ID:", fileId);
