@@ -3,9 +3,11 @@ const fs = require("fs");
 const axios = require('axios');
 const PdfParse = require('pdf-parse');
 const mammoth = require("mammoth")
-//const {cohere} = require("cohere-ai")
+
 const cohere = require('cohere-ai');
-//cohere.init(process.env.COHERE_API_KEY);
+const user = require("./models/usersModel")
+const connectDB = require("./db/connect")
+
 
 
 const { TOKEN } = process.env;
@@ -171,73 +173,92 @@ async function extractPowerPointText(filePath) {
 
 
 
-// Main function to start long polling
-const startPolling = async () => {
-    let offset = 0; // Initialize offset for updates
-
-    while (true) {
-        const updates = await getUpdates(offset);
-        if (updates.length > 0) {
-            updates.forEach(async (update) => {
-                if (update.message && update.message.document) {
-                    const fileId = update.message.document.file_id;
-                    const chatId = update.message.chat.id
-
-                    try {
-                        // Retrieve file path from Telegram
-                        const fileResponse = await axios.get(`${TELEGRAM_API}/getFile`, {
-                            params: { file_id: fileId }
-                        });
-
-                        const filePath = fileResponse.data.result.file_path;
-                        const fileDownloadLink = `https://api.telegram.org/file/bot${TOKEN}/${filePath}`;
-
-                        const destinationPath = `C:\\Users\\HP\\miemieDera_bot\\downloadedDocuments\\${update.message.document.file_name}`;
-
-                        console.log("Attempting to download from:", fileDownloadLink);
-                        if(filePath.endsWith(".txt")) {
-                        await downloadFile(fileDownloadLink, destinationPath);
-
-                        console.log("File ID:", fileId);
-                        console.log("File Path:", filePath);
+// Main function to start long pollingconst startPolling = async () => {
+    const startPolling = async () => {
+        await connectDB(process.env.MONGO_URI);
+        let offset = 0; // Initialize offset for updates
+    
+        while (true) {
+            const updates = await getUpdates(offset);
+            if (updates.length > 0) {
+                for (const update of updates) { // Use for...of for async handling
+                    if (update.message) {
+                        const chatId = update.message.chat.id;
+                        const userId = update.message.from.id;
+                        const firstName = update.message.from.first_name;
+                        const lastName = update.message.from.last_name;
+                        const userName = update.message.from.username;
+    
+                        try {
+                            // Check if user exists, if not, create a new user
+                            const existingUser = await user.findOne({ userId: userId });
+                            if (!existingUser) {
+                                await user.create({
+                                    userId: userId,
+                                    firstName: firstName,
+                                    lastName: lastName,
+                                    userName: userName
+                                });
+                            }
+                        } catch (error) {
+                            console.error("Error creating or finding user:", error);
+                            continue; // Move to the next update in case of user creation error
                         }
-                        
-                        else if(filePath.endsWith(".pdf")) {
-                            sendMessage(chatId,"plese wait while we process your document😇💡")
-                          const text =   await downloadAndExtractPdfFile(fileDownloadLink,destinationPath)
-                          sendMessage(chatId,text)
-                             console.log("File ID:", fileId);
-                            console.log("File Path:", filePath);
-                        } 
-                        else if (filePath.endsWith(".pptx")) {
-                            sendMessage(chatId,"Sorry we cannot process Powerpoint file just yet, but we would surely let you know when we can.if you have a pdf or .docx version of the text we can process it😊😇")
-                            //await downloadAndExtractPowerPointFile(fileDownloadLink,destinationPath)
-                            console.log("power point file")
-                            console.log("File ID:", fileId);
-                            console.log("File Path:", filePath);
-
+    
+                        // File processing logic
+                        if (update.message.document) {
+                            const fileId = update.message.document.file_id;
+    
+                            try {
+                                // Retrieve file path from Telegram
+                                const fileResponse = await axios.get(`${TELEGRAM_API}/getFile`, {
+                                    params: { file_id: fileId }
+                                });
+    
+                                const filePath = fileResponse.data.result.file_path;
+                                const fileDownloadLink = `https://api.telegram.org/file/bot${TOKEN}/${filePath}`;
+                                const destinationPath = `C:\\Users\\HP\\miemieDera_bot\\downloadedDocuments\\${update.message.document.file_name}`;
+    
+                                console.log("Attempting to download from:", fileDownloadLink);
+    
+                                if (filePath.endsWith(".txt")) {
+                                    await downloadFile(fileDownloadLink, destinationPath);
+                                    console.log("File ID:", fileId);
+                                    console.log("File Path:", filePath);
+                                } else if (filePath.endsWith(".pdf")) {
+                                    sendMessage(chatId, "Please wait while we process your document 😇💡");
+                                    const text = await downloadAndExtractPdfFile(fileDownloadLink, destinationPath);
+                                    sendMessage(chatId, text);
+                                    console.log("File ID:", fileId);
+                                    console.log("File Path:", filePath);
+                                } else if (filePath.endsWith(".pptx")) {
+                                    sendMessage(chatId, "Sorry, we cannot process PowerPoint files yet. If you have a PDF or .docx version, we can process it 😊😇");
+                                    console.log("PowerPoint file received");
+                                    console.log("File ID:", fileId);
+                                    console.log("File Path:", filePath);
+                                }
+                            } catch (error) {
+                                if (error.message.includes("context_length_exceeded")) {
+                                    sendMessage(chatId, "Exceeded the file limit. You should read it yourself! 😭😖");
+                                } else {
+                                    console.error(`Failed to process file: ${error.message}`);
+                                }
+                            }
+                        } else {
+                            console.log("No document found in this message.");
                         }
-                    } catch (error) {
-                        if(error.message.includes("context_length_exceeded")) {
-                            sendMessage(chatId,"exceeded the file limit. you sef read naw😭😖")
-                            console.error(`Failed to process file: ${error.message}`);
-                        }else {
-                        console.error(`Failed to process file: ${error.message}`);
                     }
                 }
-                } else {
-                    console.log("No document found in this update.");
-                }
-            });
-
-            // Update offset to avoid re-fetching the same updates
-            offset = updates[updates.length - 1].update_id + 1;
+    
+                // Update offset to avoid re-fetching the same updates
+                offset = updates[updates.length - 1].update_id + 1;
+            }
+    
+            // Wait before checking for updates again
+            await new Promise((resolve) => setTimeout(resolve, POLLING_INTERVAL));
         }
-
-        // Wait before checking for updates again
-        await new Promise((resolve) => setTimeout(resolve, POLLING_INTERVAL));
-    }
-};
-
-// Start the bot
-startPolling();
+    };
+    
+    // Start the bot
+    startPolling();
+    

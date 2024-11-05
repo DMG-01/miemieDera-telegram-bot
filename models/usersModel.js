@@ -14,10 +14,10 @@ const userModel = new mongoose.Schema({
     },
     userName: {
         type:String,
-        required:[true,"userName is required"]
+        //required:[true,"userName is required"]
     }
     
 },{timestamps:true})
 
-module.exports = mongoose.model("user",userModel)
+module.exports = mongoose.model("botUser",userModel)
 
