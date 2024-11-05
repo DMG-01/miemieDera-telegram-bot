@@ -188,6 +188,7 @@ async function extractPowerPointText(filePath) {
                         const firstName = update.message.from.first_name;
                         const lastName = update.message.from.last_name;
                         const userName = update.message.from.username;
+                        const text = update.message.text
     
                         try {
                             // Check if user exists, if not, create a new user
@@ -204,6 +205,14 @@ async function extractPowerPointText(filePath) {
                             console.error("Error creating or finding user:", error);
                             continue; // Move to the next update in case of user creation error
                         }
+
+                        if (/[a-zA-Z]/.test(text)) {
+                            if (/miemieDera/i.test(text)) {  // 'i' makes the regex case-insensitive
+                                sendMessage(chatId, `Hello ${firstName}, this is miemieDera, your universal bot. I can help with summarizing any text document and more...😁`);
+                            }
+                        }
+                        
+                        
     
                         // File processing logic
                         if (update.message.document) {
