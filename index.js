@@ -6,6 +6,7 @@ const mammoth = require("mammoth")
 
 const cohere = require('cohere-ai');
 const user = require("./models/usersModel")
+const pptxCount = require("./models/pptxCount")
 const connectDB = require("./db/connect")
 
 
@@ -242,6 +243,13 @@ async function extractPowerPointText(filePath) {
                                     console.log("File Path:", filePath);
                                 } else if (filePath.endsWith(".pptx")) {
                                     sendMessage(chatId, "Sorry, we cannot process PowerPoint files yet. If you have a PDF or .docx version, we can process it 😊😇");
+                                    let count = await pptxCount.findOne({id:1});
+                                    if(!count) {
+                                        count = await pptxCount.create({numberOfCount:0,id:1}) 
+                                    }
+                                     count.numberOfCount++
+                                     console.log(`TOTAL NUMBER OF POWER POINT REQUEST : ${count.numberOfCount}`)
+                                     await count.save()
                                     console.log("PowerPoint file received");
                                     console.log("File ID:", fileId);
                                     console.log("File Path:", filePath);
