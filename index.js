@@ -32,7 +32,7 @@ const groq = new Groq({ apiKey: process.env.GROQ_API_KEY });
     messages: [
       {
         role: "user",
-        content: "explain in 1500 words" + textToExplain,
+        content: "explain in 700 words" + textToExplain,
       },
     ],
     model: "llama3-8b-8192",
@@ -66,7 +66,7 @@ const sendMessage = async (chatId, text) => {
             },
         });
     } catch (error) {
-        console.error('Error sending message:', error);
+       // console.error('Error sending message:', error);
     }
 };
 
@@ -99,7 +99,7 @@ const downloadFile = async (url, destination, mimeType) => {
             console.log('Downloaded file is not a text file or is binary.');
         }
     } catch (error) {
-        console.error('Error downloading file:', error);
+        //console.error('Error downloading file:', error);
     }
 }
 
@@ -117,7 +117,7 @@ const downloadAndExtractPdfFile =  async(url,destination) =>{
         return summarizedText
 
     }catch(error) {
-        console.log(`error downloading file ${error}`)
+       // console.log(`error downloading file ${error}`)
     }
 }
 
@@ -141,11 +141,11 @@ const downloadAndExtractPowerPointFile = async (url, destination) => {
 
             
         } else {
-            console.error("Failed to extract content from the PowerPoint file.");
+           // console.error("Failed to extract content from the PowerPoint file.");
         }
         
     } catch (error) {
-        console.error(`Error downloading or extracting PowerPoint file: ${error}`);
+        //console.error(`Error downloading or extracting PowerPoint file: ${error}`);
     }
 };
 
@@ -163,7 +163,7 @@ async function extractPowerPointText(filePath) {
         return extractedText;
 
     } catch (error) {
-        console.error('Error parsing PowerPoint file:', error);
+       // console.error('Error parsing PowerPoint file:', error);
         return null; // Return null on failure
     }
 }  
@@ -173,7 +173,7 @@ async function extractPowerPointText(filePath) {
 
 
 
-
+let fileDownloadLink,destinationPath,filePath
 // Main function to start long pollingconst startPolling = async () => {
     const startPolling = async () => {
         await connectDB(process.env.MONGO_URI);
@@ -212,11 +212,26 @@ async function extractPowerPointText(filePath) {
                                 sendMessage(chatId, `Hello ${firstName}, this is miemieDera, your universal bot. I can help with summarizing any text document and more...😁`);
                             }
                         }
+
+                        
+                        console.log(fileDownloadLink)
+                        console.log(destinationPath)
+                        console.log(filePath)
+                        
+
+                        if(text == "Summarize a Text") {
+                            sendMessage(chatId, "Please wait while we process your document 😇💡");
+                            console.log("---------------------------------------------------------------------")
+                            console.log(`file download link : ${fileDownloadLink}`)
+                            console.log(`file destination path : ${destinationPath}`)
+                            let processedText  = await downloadAndExtractPdfFile(fileDownloadLink, destinationPath);
+                            sendMessage(chatId,processedText)
+                        }
                         
                         
     
                         // File processing logic
-                        if (update.message.document) {
+                        else if (update.message.document) {
                             const fileId = update.message.document.file_id;
     
                             try {
@@ -225,9 +240,9 @@ async function extractPowerPointText(filePath) {
                                     params: { file_id: fileId }
                                 });
     
-                                const filePath = fileResponse.data.result.file_path;
-                                const fileDownloadLink = `https://api.telegram.org/file/bot${TOKEN}/${filePath}`;
-                                const destinationPath = `C:\\Users\\HP\\miemieDera_bot\\downloadedDocuments\\${update.message.document.file_name}`;
+                                 filePath = fileResponse.data.result.file_path;
+                                 fileDownloadLink = `https://api.telegram.org/file/bot${TOKEN}/${filePath}`;
+                                 destinationPath = `C:\\Users\\HP\\miemieDera_bot\\downloadedDocuments\\${update.message.document.file_name}`;
     
                                 console.log("Attempting to download from:", fileDownloadLink);
     
@@ -236,11 +251,15 @@ async function extractPowerPointText(filePath) {
                                     console.log("File ID:", fileId);
                                     console.log("File Path:", filePath);
                                 } else if (filePath.endsWith(".pdf")) {
-                                    sendMessage(chatId, "Please wait while we process your document 😇💡");
-                                    const text = await downloadAndExtractPdfFile(fileDownloadLink, destinationPath);
-                                    sendMessage(chatId, text);
+                                    sendMessage(chatId,"How would you like your document to be processed? summarize, generate 30 questions or summarize and generate 30 questions please use the customized keyboard near the voice note icon")
+                                   
+                                    
+                                    //const text = await downloadAndExtractPdfFile(fileDownloadLink, destinationPath);
+                                    //sendMessage(chatId, text);
                                     console.log("File ID:", fileId);
                                     console.log("File Path:", filePath);
+                                    console.log(`PDF FILE DOWNLOAD LINK: ${fileDownloadLink}`)
+                                    console.log(`PDF FILE DESTINATION PATH: ${destinationPath}`)
                                 } else if (filePath.endsWith(".pptx")) {
                                     sendMessage(chatId, "Sorry, we cannot process PowerPoint files yet. If you have a PDF or .docx version, we can process it 😊😇");
                                     let count = await pptxCount.findOne({id:1});
@@ -258,7 +277,7 @@ async function extractPowerPointText(filePath) {
                                 if (error.message.includes("context_length_exceeded")) {
                                     sendMessage(chatId, "Exceeded the file limit. You should read it yourself! 😭😖");
                                 } else {
-                                    console.error(`Failed to process file: ${error.message}`);
+                                    //console.error(`Failed to process file: ${error.message}`);
                                 }
                             }
                         } else {
