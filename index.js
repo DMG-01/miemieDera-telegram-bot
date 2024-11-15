@@ -61,7 +61,7 @@ const sendMessage = async (chatId, text) => {
             chat_id: chatId,
             text: text,
             reply_markup: {
-                keyboard: [["Summarize a Text", "pin a chat"], ["echo messages", "say what I say"]],
+                keyboard: [["Summarize a Text", "Generate Questions From the Text"], ["echo messages", "say what I say"]],
                 resize_keyboard: true
             },
         });
