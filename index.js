@@ -61,6 +61,62 @@ async function getGroqChatCompletionII(textToGenerateFrom) {
   }  
 
 
+  function processQuestions(text = "") {
+    if (!text) {
+        console.log("Warning: No text provided to process questions.");
+        return []; // Return an empty array to avoid further processing if text is empty
+    }
+
+    // Debug: Log the entire text for troubleshooting
+    console.log("Full text received for processing:\n", text);
+
+    // Splitting based on "**Question x" pattern, handling cases with or without asterisks
+    const questionsArray = text.split(/\*\*Question \d+\n/).slice(1);
+
+    // Debug: Log each question's raw text after splitting
+    console.log("Questions array after split:", questionsArray);
+
+    const parsedQuestions = questionsArray.map((q, index) => {
+        const [questionAndOptions, answer] = q.split("Answer:");
+
+        // Check if question and answer parts exist
+        if (!questionAndOptions || !answer) {
+            console.log(`Warning: Missing question, options, or answer in question ${index + 1}`);
+            console.log("Raw text for this question:", q); // Log raw question text for troubleshooting
+            return null; // Skip this question if format is unexpected
+        }
+
+        // Separate question text and options
+        const lines = questionAndOptions
+            .trim()
+            .split("\n")
+            .filter(line => line.trim());
+
+        const questionText = lines[0]; // First line should be the question text
+
+        // Options start from the second line onward
+        const options = lines.slice(1).map(option => option.trim());
+
+        const formattedOptions = options.map(option => option.replace(/^Option [A-D]:\s*/, '').trim());
+
+        return {
+            question: `Question ${index + 1}: ${questionText.trim()}`,
+            options: formattedOptions,
+            answer: `Answer: ${answer.trim()}`
+        };
+    });
+
+    // Filter out any null entries from unexpected format cases
+    const validParsedQuestions = parsedQuestions.filter(q => q !== null);
+
+    // Debug: Final parsed questions
+    console.log("Parsed questions:", validParsedQuestions);
+    return validParsedQuestions;
+}
+
+
+
+
 
 
 
@@ -94,12 +150,15 @@ const sendMessage = async (chatId, text) => {
 };
 
 // Function to create a poll
-const createPoll = async (chatId, question, options) => {
+const createPoll = async (chatId, question, options,correctOption) => {
     try {
         await axios.post(`${TELEGRAM_API}/sendPoll`, {
             chat_id: chatId,
             question: question,
-            options: options
+            options: options,
+            type: "quiz",
+            allows_multiple_answers:false,
+            correct_option_id:correctOption
         });
     } catch (error) {
         console.error('Error creating poll:', error);
@@ -260,8 +319,13 @@ let fileDownloadLink,destinationPath,filePath
                                 sendMessage(chatId,"Please send the document you want us to process")
                             }
                             let processedText = await downloadAndExtractPdfFile(fileDownloadLink, destinationPath,"G")
-                        
-                           // console.log(processedText)
+                           let text = processQuestions(processedText) 
+
+                           console.log(text[0])
+                           console.log("---------------------------------------------------------------------------")
+
+                          // createPoll(chatId,text[0].question,text[0].options,1)
+
                         }
                         
                         
