@@ -53,7 +53,21 @@ async function getGroqChatCompletionII(textToGenerateFrom) {
       messages: [
         {
           role: "user",
-          content: "generate 15 questions in the format: question 1 ...question option a ...optionA B...optionB optionC ...optionC optionD ...optionD. Answer: answer choice without asterik sign and also generate them once  " + textToGenerateFrom,
+          content:`Generate 15 multiple-choice questions from the following text in this specific format:
+
+Question 1
+
+Question text: <Insert question text here>
+Options:
+
+Option A: <Insert option A text>
+Option B: <Insert option B text>
+Option C: <Insert option C text>
+Option D: <Insert option D text>
+Answer:
+
+Answer: <Correct option letter without asterisks>
+Continue this pattern for each question, up to 15 questions. Avoid adding any extra formatting outside of this pattern."` + textToGenerateFrom,
         },
       ],
       model: "llama3-8b-8192",
@@ -61,23 +75,20 @@ async function getGroqChatCompletionII(textToGenerateFrom) {
   }  
 
 
-  function processQuestions(text = "") {
+  function processQuestions(text = "") { 
     if (!text) {
         console.log("Warning: No text provided to process questions.");
         return []; // Return an empty array to avoid further processing if text is empty
     }
 
-    // Debug: Log the entire text for troubleshooting
-    console.log("Full text received for processing:\n", text);
-
-    // Splitting based on "**Question x" pattern, handling cases with or without asterisks
-    const questionsArray = text.split(/\*\*Question \d+\n/).slice(1);
+    // Splitting based on "Question x" pattern, where x is the question number
+    const questionsArray = text.split(/Question \d+\n/).slice(1);
 
     // Debug: Log each question's raw text after splitting
     console.log("Questions array after split:", questionsArray);
 
     const parsedQuestions = questionsArray.map((q, index) => {
-        const [questionAndOptions, answer] = q.split("Answer:");
+        const [questionAndOptions, answer] = q.split("Answer:").map(part => part.trim());
 
         // Check if question and answer parts exist
         if (!questionAndOptions || !answer) {
@@ -87,22 +98,19 @@ async function getGroqChatCompletionII(textToGenerateFrom) {
         }
 
         // Separate question text and options
-        const lines = questionAndOptions
-            .trim()
-            .split("\n")
-            .filter(line => line.trim());
+        const lines = questionAndOptions.split("\n").filter(line => line.trim());
 
-        const questionText = lines[0]; // First line should be the question text
+        const questionText = lines[0].replace("Question text:", "").trim(); // First line should be the question text
 
-        // Options start from the second line onward
-        const options = lines.slice(1).map(option => option.trim());
-
-        const formattedOptions = options.map(option => option.replace(/^Option [A-D]:\s*/, '').trim());
+        // Options start from the second line onward, formatted with "Option A:" etc.
+        const options = lines.slice(1).map(option => {
+            return option.replace(/^Option [A-D]:\s*/, '').trim();
+        });
 
         return {
-            question: `Question ${index + 1}: ${questionText.trim()}`,
-            options: formattedOptions,
-            answer: `Answer: ${answer.trim()}`
+            question: `Question ${index + 1}: ${questionText}`,
+            options: options,
+            answer: `Answer: ${answer}`
         };
     });
 
@@ -113,6 +121,7 @@ async function getGroqChatCompletionII(textToGenerateFrom) {
     console.log("Parsed questions:", validParsedQuestions);
     return validParsedQuestions;
 }
+
 
 
 
@@ -313,20 +322,31 @@ let fileDownloadLink,destinationPath,filePath
                             console.log(`file destination path : ${destinationPath}`)
                             let processedText  = await downloadAndExtractPdfFile(fileDownloadLink, destinationPath,"S");
                             sendMessage(chatId,processedText)
-                        }else if(text == "Generate Questions From the Text") {
+                        }
+                        else if(text == "Generate Questions From the Text") {
                             sendMessage(chatId, "Please wait while we process your document 😇💡");
                             if((fileDownloadLink == undefined) || (destinationPath == undefined)) {
-                                sendMessage(chatId,"Please send the document you want us to process")
+                                sendMessage(chatId,"Please send the document you want us to process");
                             }
-                            let processedText = await downloadAndExtractPdfFile(fileDownloadLink, destinationPath,"G")
-                           let text = processQuestions(processedText) 
-
-                           console.log(text[0])
-                           console.log("---------------------------------------------------------------------------")
-
-                          // createPoll(chatId,text[0].question,text[0].options,1)
-
+                            let processedText = await downloadAndExtractPdfFile(fileDownloadLink, destinationPath,"G");
+                            let questionsArray = processQuestions(processedText);
+                        
+                            // Loop through each question and create a poll
+                            for (let i = 0; i < questionsArray.length; i++) {
+                                const questionObj = questionsArray[i];
+                                const { question, options, answer } = questionObj;
+                                
+                                // Find the index of the correct answer option in options array
+                                const correctOptionIndex = options.findIndex(option => option === answer.replace("Answer: ", ""));
+                        
+                                // Call createPoll for each question
+                                await createPoll(chatId, question, options, 0);
+                                
+                                // Optional delay to prevent spamming in case of large question lists
+                                await new Promise(resolve => setTimeout(resolve, 1000));
+                            }
                         }
+                        
                         
                         
     
