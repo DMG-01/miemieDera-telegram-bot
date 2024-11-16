@@ -335,12 +335,23 @@ let fileDownloadLink,destinationPath,filePath
                             for (let i = 0; i < questionsArray.length; i++) {
                                 const questionObj = questionsArray[i];
                                 const { question, options, answer } = questionObj;
+                                console.log("answer to question is::::" + answer)
+                                mainAns = answer[answer.length-1]
                                 
+                                if(mainAns == "A"){
+                                    correctOptionIndex = 1
+                                }else if(mainAns == "B") {
+                                    correctOptionIndex = 2
+                                }else if(mainAns == "C") {
+                                    correctOptionIndex = 3
+                                }else if(mainAns =="D") {
+                                    correctOptionIndex = 4
+                                }
                                 // Find the index of the correct answer option in options array
-                                const correctOptionIndex = options.findIndex(option => option === answer.replace("Answer: ", ""));
+                                //const correctOptionIndex = options.findIndex(option => option === answer.replace("Answer: ", ""));
                         
                                 // Call createPoll for each question
-                                await createPoll(chatId, question, options, 0);
+                                await createPoll(chatId, question, options, correctOptionIndex);
                                 
                                 // Optional delay to prevent spamming in case of large question lists
                                 await new Promise(resolve => setTimeout(resolve, 1000));
