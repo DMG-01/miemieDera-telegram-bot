@@ -20,11 +20,19 @@ const Groq = require('groq-sdk');
 
 const groq = new Groq({ apiKey: process.env.GROQ_API_KEY });
 
- async function main(text) {
+ async function main(text,fn) {
+    if(fn == "S") {
   const chatCompletion = await getGroqChatCompletion(text);
   // Print the completion returned by the LLM.
   console.log(chatCompletion.choices[0]?.message?.content || "");
   return(chatCompletion.choices[0]?.message?.content || "")
+    }else if(fn == "G") {
+
+    const chatCompletion = await getGroqChatCompletionII(text);
+  // Print the completion returned by the LLM.
+  console.log(chatCompletion.choices[0]?.message?.content || "");
+  return(chatCompletion.choices[0]?.message?.content || "")
+    }
 }
 
  async function getGroqChatCompletion(textToExplain) {
@@ -38,6 +46,21 @@ const groq = new Groq({ apiKey: process.env.GROQ_API_KEY });
     model: "llama3-8b-8192",
   });
 }  
+
+
+async function getGroqChatCompletionII(textToGenerateFrom) {
+    return groq.chat.completions.create({
+      messages: [
+        {
+          role: "user",
+          content: "generate 15 questions in the format: question 1 ...question option a ...optionA B...optionB optionC ...optionC optionD ...optionD. Answer: answer choice without asterik sign and also generate them once  " + textToGenerateFrom,
+        },
+      ],
+      model: "llama3-8b-8192",
+    });
+  }  
+
+
 
 
 
@@ -103,7 +126,7 @@ const downloadFile = async (url, destination, mimeType) => {
     }
 }
 
-const downloadAndExtractPdfFile =  async(url,destination) =>{
+const downloadAndExtractPdfFile =  async(url,destination,fn) =>{
 
     try {
         const response = await axios.get(url, {responseType:`arraybuffer`})
@@ -113,8 +136,13 @@ const downloadAndExtractPdfFile =  async(url,destination) =>{
         const pdfData = await PdfParse(pdfBuffer)
         //console.log(`extracted pdf content :${pdfData.text}`)
         //fs.writeFileSync("newpdf",pdfData.text)
-        const summarizedText = main(pdfData.text)
+        if(fn == "S") {
+        const summarizedText = main(pdfData.text,fn)
         return summarizedText
+        }else if(fn == "G") {
+            const generatedText = main(pdfData.text,fn)
+            return generatedText
+        }
 
     }catch(error) {
        // console.log(`error downloading file ${error}`)
@@ -224,8 +252,16 @@ let fileDownloadLink,destinationPath,filePath
                             console.log("---------------------------------------------------------------------")
                             console.log(`file download link : ${fileDownloadLink}`)
                             console.log(`file destination path : ${destinationPath}`)
-                            let processedText  = await downloadAndExtractPdfFile(fileDownloadLink, destinationPath);
+                            let processedText  = await downloadAndExtractPdfFile(fileDownloadLink, destinationPath,"S");
                             sendMessage(chatId,processedText)
+                        }else if(text == "Generate Questions From the Text") {
+                            sendMessage(chatId, "Please wait while we process your document 😇💡");
+                            if((fileDownloadLink == undefined) || (destinationPath == undefined)) {
+                                sendMessage(chatId,"Please send the document you want us to process")
+                            }
+                            let processedText = await downloadAndExtractPdfFile(fileDownloadLink, destinationPath,"G")
+                        
+                           // console.log(processedText)
                         }
                         
                         
