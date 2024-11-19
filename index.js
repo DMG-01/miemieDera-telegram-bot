@@ -114,6 +114,8 @@ Continue this pattern for each question, up to 15 questions. Avoid adding any ex
         };
     });
 
+    
+
     // Filter out any null entries from unexpected format cases
     const validParsedQuestions = parsedQuestions.filter(q => q !== null);
 
@@ -330,6 +332,10 @@ let fileDownloadLink,destinationPath,filePath
                             }
                             let processedText = await downloadAndExtractPdfFile(fileDownloadLink, destinationPath,"G");
                             let questionsArray = processQuestions(processedText);
+                            
+                            if(questionsArray.length < 10) {
+                                sendMessage(chatId,"Seems you have problem with your internet connection, generate questions again")
+                            } else {
                         
                             // Loop through each question and create a poll
                             for (let i = 0; i < questionsArray.length; i++) {
@@ -356,6 +362,8 @@ let fileDownloadLink,destinationPath,filePath
                                 // Optional delay to prevent spamming in case of large question lists
                                 await new Promise(resolve => setTimeout(resolve, 1000));
                             }
+                            
+                        }
                         }
                         
                         
