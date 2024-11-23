@@ -220,6 +220,7 @@ const downloadAndExtractPdfFile =  async(url,destination,fn) =>{
 }
 
 const PPTX2Json = require('pptx2json');
+const { ChatStreamEndEventFinishReason } = require('cohere-ai/api');
 
 const downloadAndExtractPowerPointFile = async (url, destination) => {
     try {
@@ -269,9 +270,9 @@ async function extractPowerPointText(filePath) {
 
 
 
+const userState = {}
 
-
-let fileDownloadLink,destinationPath,filePath
+//let fileDownloadLink,destinationPath,filePath
 // Main function to start long pollingconst startPolling = async () => {
     const startPolling = async () => {
         await connectDB(process.env.MONGO_URI);
@@ -312,58 +313,27 @@ let fileDownloadLink,destinationPath,filePath
                         }
 
                         
-                        console.log(fileDownloadLink)
-                        console.log(destinationPath)
-                        console.log(filePath)
+                       // console.log(fileDownloadLink)
+                        //console.log(destinationPath)
+                        //console.log(filePath)
                         
 
                         if(text == "Summarize a Text") {
-                            sendMessage(chatId, "Please wait while we process your document 😇💡");
+                            sendMessage(chatId, "Please send the document you would want us to process 😇💡");
                             console.log("---------------------------------------------------------------------")
-                            console.log(`file download link : ${fileDownloadLink}`)
-                            console.log(`file destination path : ${destinationPath}`)
+                            /* console.log(`file download link : ${fileDownloadLink}`)
+                             console.log(`file destination path : ${destinationPath}`)
                             let processedText  = await downloadAndExtractPdfFile(fileDownloadLink, destinationPath,"S");
-                            sendMessage(chatId,processedText)
+                             */
+                            userState[chatId] = "summarize"
+                            console.log("user state is " + userState[chatId])
+                            //sendMessage(chatId,processedText)
                         }
                         else if(text == "Generate Questions From the Text") {
-                            sendMessage(chatId, "Please wait while we process your document 😇💡");
-                            if((fileDownloadLink == undefined) || (destinationPath == undefined)) {
-                                sendMessage(chatId,"Please send the document you want us to process");
-                            }
-                            let processedText = await downloadAndExtractPdfFile(fileDownloadLink, destinationPath,"G");
-                            let questionsArray = processQuestions(processedText);
-                            
-                            if(questionsArray.length < 10) {
-                                sendMessage(chatId,"Seems you have problem with your internet connection, generate questions again")
-                            } else {
-                        
-                            // Loop through each question and create a poll
-                            for (let i = 0; i < questionsArray.length; i++) {
-                                const questionObj = questionsArray[i];
-                                const { question, options, answer } = questionObj;
-                                console.log("answer to question is::::" + answer)
-                                mainAns = answer[answer.length-1]
-                                
-                                if(mainAns == "A"){
-                                    correctOptionIndex = 1
-                                }else if(mainAns == "B") {
-                                    correctOptionIndex = 2
-                                }else if(mainAns == "C") {
-                                    correctOptionIndex = 3
-                                }else if(mainAns =="D") {
-                                    correctOptionIndex = 4
-                                }
-                                // Find the index of the correct answer option in options array
-                                //const correctOptionIndex = options.findIndex(option => option === answer.replace("Answer: ", ""));
-                        
-                                // Call createPoll for each question
-                                await createPoll(chatId, question, options, correctOptionIndex);
-                                
-                                // Optional delay to prevent spamming in case of large question lists
-                                await new Promise(resolve => setTimeout(resolve, 1000));
-                            }
-                            
-                        }
+                            sendMessage(chatId, "Please send document you would want us to generate questions from 😇💡");
+                            userState[chatId] = "generate"
+
+                            console.log("user state is " + userState[chatId])
                         }
                         
                         
@@ -378,27 +348,155 @@ let fileDownloadLink,destinationPath,filePath
                                 const fileResponse = await axios.get(`${TELEGRAM_API}/getFile`, {
                                     params: { file_id: fileId }
                                 });
-    
+                                
+                                let fileDownloadLink, destinationPath,filePath
+
                                  filePath = fileResponse.data.result.file_path;
                                  fileDownloadLink = `https://api.telegram.org/file/bot${TOKEN}/${filePath}`;
                                  destinationPath = `C:\\Users\\HP\\miemieDera_bot\\downloadedDocuments\\${update.message.document.file_name}`;
     
                                 console.log("Attempting to download from:", fileDownloadLink);
-    
+                                
                                 if (filePath.endsWith(".txt")) {
-                                    await downloadFile(fileDownloadLink, destinationPath);
-                                    console.log("File ID:", fileId);
-                                    console.log("File Path:", filePath);
-                                } else if (filePath.endsWith(".pdf")) {
-                                    sendMessage(chatId,"How would you like your document to be processed? summarize, generate 30 questions or summarize and generate 30 questions please use the customized keyboard near the voice note icon")
-                                   
+
+                                    try {
+                                        await downloadFile(fileDownloadLink, destinationPath);
+                                        console.log("done downloading")
+                                        }catch (error) {
+                                            if (error.message.includes("context_length_exceeded")) {
+                                                sendMessage(chatId, "Exceeded the file limit. You should read it yourself! 😭😖");
+                                            } else {
+                                                //console.error(`Failed to process file: ${error.message}`);
+                                            }
+                                        }
+
+                                    if(userState[chatId] == "summarize") {
+                                        sendMessage(chatId,"please wait while we process your document")
+                                        let processedText  = await downloadAndExtractPdfFile(fileDownloadLink, destinationPath,"S");
+                                        sendMessage(chatId,processedText)
+                                        userState[chatId] == "idle"
+                                        console.log(`after file processing the user state is ${userState[chatId]}`)
+                                    }
+
+
+                                    else if (userState[chatId] = "generate")  {
+                                        sendMessage(chatId,"please wait while we process your document")
+                                        
+                                        if((fileDownloadLink == undefined) || (destinationPath == undefined)) {
+                                            sendMessage(chatId,"Please send the document you want us to process");
+                                        }
+                                        let processedText = await downloadAndExtractPdfFile(fileDownloadLink, destinationPath,"G");
+                                        let questionsArray = processQuestions(processedText);
+                                        
+                                        if(questionsArray.length < 10) {
+                                            sendMessage(chatId,"Seems you have problem with your internet connection, generate questions again")
+                                        } 
+                                        else {
                                     
-                                    //const text = await downloadAndExtractPdfFile(fileDownloadLink, destinationPath);
-                                    //sendMessage(chatId, text);
+                                        // Loop through each question and create a poll
+                                        for (let i = 0; i < questionsArray.length; i++) {
+                                            const questionObj = questionsArray[i];
+                                            const { question, options, answer } = questionObj;
+                                            console.log("answer to question is::::" + answer)
+                                            mainAns = answer[answer.length-1]
+                                            
+                                            if(mainAns == "A"){
+                                                correctOptionIndex = 1
+                                            }else if(mainAns == "B") {
+                                                correctOptionIndex = 2
+                                            }else if(mainAns == "C") {
+                                                correctOptionIndex = 3
+                                            }else if(mainAns =="D") {
+                                                correctOptionIndex = 4
+                                            }
+                                            // Find the index of the correct answer option in options array
+                                            //const correctOptionIndex = options.findIndex(option => option === answer.replace("Answer: ", ""));
+                                    
+                                            // Call createPoll for each question
+                                            await createPoll(chatId, question, options, correctOptionIndex);
+                                            
+                                            // Optional delay to prevent spamming in case of large question lists
+                                            await new Promise(resolve => setTimeout(resolve, 1000));
+                                        }
+                                        userState[chatId] = "idle"
+                                    }
                                     console.log("File ID:", fileId);
                                     console.log("File Path:", filePath);
-                                    console.log(`PDF FILE DOWNLOAD LINK: ${fileDownloadLink}`)
-                                    console.log(`PDF FILE DESTINATION PATH: ${destinationPath}`)
+                                }   
+                                }
+                                
+                            else if (filePath.endsWith(".pdf")) {
+                                   
+
+                                    try {
+                                        await downloadAndExtractPdfFile(fileDownloadLink, destinationPath);
+                                        console.log("done downloading")
+                                        }catch (error) {
+                                            if (error.message.includes("context_length_exceeded")) {
+                                                sendMessage(chatId, "Exceeded the file limit. You should read it yourself! 😭😖");
+                                            } else {
+                                                //console.error(`Failed to process file: ${error.message}`);
+                                            }
+                                        }
+                                    
+                                    if(userState[chatId] == "summarize") {
+                                        console.log("user state is--- " + userState[chatId])
+                                        sendMessage(chatId,"please wait while we process your document")
+                                        let processedText  = await downloadAndExtractPdfFile(fileDownloadLink, destinationPath,"S");
+                                        sendMessage(chatId,processedText)
+                                        userState[chatId] = "idle"
+                                        console.log(`user state after processing file is ${userState[chatId]}`)
+                                    }
+                                    else if (userState[chatId] == "generate")  {
+                                        sendMessage(chatId,"please wait while we process your document")
+                                        console.log("user state is ---------------" + userState[chatId])
+                                        
+                                        if((fileDownloadLink == undefined) || (destinationPath == undefined)) {
+                                            sendMessage(chatId,"Please send the document you want us to process");
+                                        }
+                                        let processedText = await downloadAndExtractPdfFile(fileDownloadLink, destinationPath,"G");
+                                        let questionsArray = processQuestions(processedText);
+                                        
+                                        if(questionsArray.length < 10) {
+                                         questionsArray = processQuestions(processedText);
+                                        } else {
+                                    
+                                        // Loop through each question and create a poll
+                                        for (let i = 0; i < questionsArray.length; i++) {
+                                            const questionObj = questionsArray[i];
+                                            const { question, options, answer } = questionObj;
+                                            console.log("answer to question is::::" + answer)
+                                            mainAns = answer[answer.length-1]
+                                            let correctOptionIndex
+                                            
+                                            if(mainAns == "A"){
+                                                correctOptionIndex = 1
+                                            }else if(mainAns == "B") {
+                                                correctOptionIndex = 2
+                                            }else if(mainAns == "C") {
+                                                correctOptionIndex = 3
+                                            }else if(mainAns =="D") {
+                                                correctOptionIndex = 4
+                                            }
+                                            // Find the index of the correct answer option in options array
+                                            //const correctOptionIndex = options.findIndex(option => option === answer.replace("Answer: ", ""));
+                                    
+                                            // Call createPoll for each question
+                                            await createPoll(chatId, question, options, correctOptionIndex);
+                                            
+                                            // Optional delay to prevent spamming in case of large question lists
+                                            await new Promise(resolve => setTimeout(resolve, 1000));
+                                        }
+                                        userState[chatId] = "idle"
+                                        console.log(`userState after file processing is ${userState[ChatStreamEndEventFinishReason]}`)
+                                    }
+                                    console.log("File ID:", fileId);
+                                    console.log("File Path:", filePath);
+                                    console.log(`after file processing the user state is ${userState[chatId]}`)
+                                } else {
+                                    console.log("nothing to do?")
+                                }
+
                                 } else if (filePath.endsWith(".pptx")) {
                                     sendMessage(chatId, "Sorry, we cannot process PowerPoint files yet. If you have a PDF or .docx version, we can process it 😊😇");
                                     let count = await pptxCount.findOne({id:1});
@@ -412,16 +510,13 @@ let fileDownloadLink,destinationPath,filePath
                                     console.log("File ID:", fileId);
                                     console.log("File Path:", filePath);
                                 }
-                            } catch (error) {
-                                if (error.message.includes("context_length_exceeded")) {
-                                    sendMessage(chatId, "Exceeded the file limit. You should read it yourself! 😭😖");
-                                } else {
-                                    //console.error(`Failed to process file: ${error.message}`);
-                                }
+                            } catch(error) {
+                                console.log("error: " + error )
                             }
-                        } else {
-                            console.log("No document found in this message.");
                         }
+                         /*else {
+                            console.log("No document found in this message.");
+                        }*/
                     }
                 }
     
@@ -433,6 +528,7 @@ let fileDownloadLink,destinationPath,filePath
             await new Promise((resolve) => setTimeout(resolve, POLLING_INTERVAL));
         }
     };
+    
     
     // Start the bot
     startPolling();
